@@ -1,5 +1,6 @@
-require "mastermind/version"
+require 'mastermind/version'
 
 module Mastermind
-  # Your code goes here...
 end
+
+require_relative './mastermind/code_peg_hole.rb'
