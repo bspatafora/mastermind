@@ -4,7 +4,7 @@ module Mastermind
 
     @@key_pegs = (1..2)
 
-    def initialize()
+    def initialize
       @peg = nil
     end
 

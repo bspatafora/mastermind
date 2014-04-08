@@ -4,7 +4,7 @@ module Mastermind
 
     @@code_pegs = (1..6)
 
-    def initialize()
+    def initialize
       @peg = nil
     end
 
