@@ -8,7 +8,7 @@ module Mastermind
       @peg = nil
     end
 
-    def peg=(peg)
+    def set_peg(peg)
       if @@key_pegs.include?(peg)
         @peg = peg
       else
