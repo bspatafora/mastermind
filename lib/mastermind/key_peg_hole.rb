@@ -1,15 +1,15 @@
 module Mastermind
-  class CodePegHole
+  class KeyPegHole
     attr_reader :peg
 
-    @@code_pegs = (1..6)
+    @@key_pegs = (1..2)
 
     def initialize()
       @peg = nil
     end
 
     def peg=(peg)
-      if @@code_pegs.include?(peg)
+      if @@key_pegs.include?(peg)
         @peg = peg
       else
         raise ArgumentError, "#{peg} is not a valid peg value."
