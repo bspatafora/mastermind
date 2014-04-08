@@ -12,7 +12,7 @@ module Mastermind
       if @@code_pegs.include?(peg)
         @peg = peg
       else
-        raise ArgumentError, "#{peg} is not a valid peg value."
+        raise ArgumentError, "#{peg} is not a valid code peg."
       end
     end
   end
