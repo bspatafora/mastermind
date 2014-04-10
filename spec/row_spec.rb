@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Mastermind
-  describe 'Row' do
+  describe Row do
 
     before { @row = Row.new }
 

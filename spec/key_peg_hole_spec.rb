@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Mastermind
-  describe 'KeyPegHole' do
+  describe KeyPegHole do
 
     before { @key_peg_hole = KeyPegHole.new }
 
