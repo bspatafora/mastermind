@@ -9,6 +9,8 @@ module Mastermind
     end
 
     def draw
+      puts
+      puts @code.map { |peg| "[#{peg}]" }.join(" ")
       24.times { print "_" }
       puts
       @rows.each do |row|
@@ -17,6 +19,7 @@ module Mastermind
         print row.get_clues.join
         puts
       end
+      puts
     end
 
     def solicit_code
@@ -54,7 +57,7 @@ module Mastermind
     def check_code(code)
       valid_length = code.size == 4
       # REFACTOR (1..6) SO IT CAN BE SET AND READ FROM ONE PLACE
-      valid_digits = code.all? { |digit| (1..6).include?(digit) }
+      valid_digits = code.all? { |digit| (1..6).include? digit }
       if @code.nil? && valid_length && valid_digits
         return :valid
       elsif @code.nil?

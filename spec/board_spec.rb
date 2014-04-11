@@ -15,7 +15,9 @@ module Mastermind
     end
 
     it "can draw a representation of itself" do
-      expect(@board.draw).to have(10).things
+      @board.stub(:gets) { "1111" }
+      @board.solicit_code
+      expect(@board.draw).not_to raise_error
     end
 
     describe "#solicit_code" do
