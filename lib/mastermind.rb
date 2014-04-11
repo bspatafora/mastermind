@@ -1,4 +1,4 @@
-require_relative './mastermind/version.rb' # Change back to normal require?
+require_relative './mastermind/version.rb'
 
 module Mastermind
 end
@@ -11,6 +11,7 @@ require_relative './mastermind/computer.rb'
 require_relative './mastermind/human.rb'
 require_relative './mastermind/game.rb'
 
-# WHERE SHOULD THIS GO?
-# game = Mastermind::Game.new
-# game.play
+if __FILE__ == $0
+  game = Mastermind::Game.new
+  game.play
+end

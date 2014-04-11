@@ -17,6 +17,7 @@ module Mastermind
     it "can draw a representation of itself" do
       @board.stub(:gets) { "1111" }
       @board.solicit_code
+      # BETTER WAY TO TEST THIS?
       expect(@board.draw).not_to raise_error
     end
 

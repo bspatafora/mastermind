@@ -1,32 +1,39 @@
 module Mastermind
   class Row
-    def initialize
-      @code_peg_holes = Array.new(4) { CodePegHole.new }
-      @key_peg_holes = Array.new(4) { KeyPegHole.new }
+    def initialize(peg_holes = 4, code_pegs = (1..6))
+      @peg_holes = peg_holes
+      @code_peg_holes = Array.new(peg_holes) { CodePegHole.new(code_pegs) }
+      @key_peg_holes = Array.new(peg_holes) { KeyPegHole.new }
     end
 
     def get_guess
-      @code_peg_holes.map { |hole| hole.peg }
+      get_row_group(@code_peg_holes)
     end
 
     def get_clues
-      @key_peg_holes.map { |hole| hole.peg }
+      get_row_group(@key_peg_holes)
     end
 
     def set_guess(guess)
-      if guess.size == 4
+      if guess.size == @peg_holes
         guess.each_with_index { |peg, index| @code_peg_holes[index].set_peg(peg) }
       else
-        raise ArgumentError, "Guesses must consist of 4 things."
+        raise ArgumentError, "Guess input must consist of #{@peg_holes} things."
       end
     end
 
     def set_clues(clues)
-      if clues.size <= 4
+      if clues.size <= @peg_holes
         clues.each_with_index { |peg, index| @key_peg_holes[index].set_peg(peg) }
       else
-        raise ArgumentError, "Clues must consist of 4 things."
+        raise ArgumentError, "Clues input must consist of #{@peg_holes} or fewer things."
       end
+    end
+
+    private
+
+    def get_row_group(group)
+      group.map { |hole| hole.peg }
     end
   end
 end

@@ -3,9 +3,11 @@ module Mastermind
     attr_accessor :rows
     attr_reader :code
 
-    def initialize(rows = 10)
-      @rows = Array.new(rows) { Row.new }
+    def initialize(rows = 10, peg_holes = 4, code_pegs = (1..6))
+      @rows = Array.new(rows) { Row.new() }
       @code = nil
+      @peg_holes = peg_holes
+      @code_pegs = code_pegs
     end
 
     def draw
@@ -23,7 +25,7 @@ module Mastermind
     end
 
     def solicit_code
-      print "Pick a 4 digit code (a digit may be between 1 and 6): "
+      print "Pick a #{@peg_holes} digit code (a digit may be between #{@code_pegs.first} and #{@code_pegs.last}): "
       set_code(gets.chomp)
     end
 
@@ -55,9 +57,8 @@ module Mastermind
     end
 
     def check_code(code)
-      valid_length = code.size == 4
-      # REFACTOR (1..6) SO IT CAN BE SET AND READ FROM ONE PLACE
-      valid_digits = code.all? { |digit| (1..6).include? digit }
+      valid_length = code.size == @peg_holes
+      valid_digits = code.all? { |digit| @code_pegs.include? digit }
       if @code.nil? && valid_length && valid_digits
         return :valid
       elsif @code.nil?
