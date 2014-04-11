@@ -8,11 +8,6 @@ module Mastermind
       @code = nil
     end
 
-    def solicit_code
-      print "Pick a 4 digit code (a digit may be between 1 and 6): "
-      set_code(gets.chomp)
-    end
-
     def draw
       24.times { print "_" }
       puts
@@ -21,6 +16,24 @@ module Mastermind
         print "  |  "
         print row.get_clues.join
         puts
+      end
+    end
+
+    def solicit_code
+      print "Pick a 4 digit code (a digit may be between 1 and 6): "
+      set_code(gets.chomp)
+    end
+
+    def codebreaker_victory?
+      @rows.any? { |row| row.get_guess.eql? @code }
+    end
+
+    def codemaker_victory?
+      unguessed = Row.new
+      if @rows.any? { |row| row.get_guess.eql? unguessed.get_guess } || codebreaker_victory?
+        false
+      else
+        true
       end
     end
 
@@ -42,7 +55,7 @@ module Mastermind
       valid_length = code.size == 4
       # REFACTOR (1..6) SO IT CAN BE SET AND READ FROM ONE PLACE
       valid_digits = code.all? { |digit| (1..6).include?(digit) }
-      if @code.nil? and valid_length and valid_digits
+      if @code.nil? && valid_length && valid_digits
         return :valid
       elsif @code.nil?
         return :invalid
