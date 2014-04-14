@@ -9,6 +9,6 @@ tries to break it.
 
 ## Usage
 
-Navigate to the directory containing the mastermind gem, then use:
+Navigate to the directory containing the mastermind gem, then run:
 
-    $ ruby ./mastermind/lib/mastermind.rb
+    $ mastermind/bin/mastermind
