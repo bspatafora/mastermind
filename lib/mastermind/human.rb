@@ -1,20 +1,20 @@
 module Mastermind
   class Human
-    def solicit_clues
+    def solicit_feedback
       print "Provide feedback on the last guess (2 = right number, right position; 1 = right number, wrong position; example input: 211): "
-      check_clues(gets.chomp)
+      check_feedback(gets.chomp)
     end
 
     private
 
-    def check_clues(input)
-      clues = input.split('').map { |x| x.to_i }
-      valid_length = clues.size <= 4
-      valid_digits = clues.all? { |clue| (1..2).include? clue }
+    def check_feedback(feedback)
+      pegs = feedback.split('').map { |x| x.to_i }
+      valid_length = pegs.size <= 4
+      valid_digits = pegs.all? { |clue| (1..2).include? clue }
       if valid_length && valid_digits
-        return clues
+        return pegs
       else
-        solicit_clues
+        solicit_feedback
       end
     end
   end

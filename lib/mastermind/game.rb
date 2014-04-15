@@ -10,7 +10,7 @@ module Mastermind
     def play
       @board.solicit_code
       @board.rows.each do |row|
-        row.set_guess(@computer.solicit_guess(@board))
+        row.set_code_peg_holes(@computer.solicit_guess(@board))
         @board.draw
         if @board.codebreaker_victory?
           puts "Computer wins!"
@@ -19,7 +19,7 @@ module Mastermind
           puts "You win!"
           break
         end
-        row.set_clues(@human.solicit_clues)
+        row.set_key_peg_holes(@human.solicit_feedback)
       end
     end
   end

@@ -47,7 +47,7 @@ describe Mastermind::Board do
     end
 
     it "returns true when the code has been guessed" do
-      @board.rows[0].set_guess([1, 1, 1, 1])
+      @board.rows[0].set_code_peg_holes([1, 1, 1, 1])
       expect(@board.codebreaker_victory?).to be_true
     end
 
@@ -63,7 +63,7 @@ describe Mastermind::Board do
     end
 
     it "returns true when game is over and code hasn't been guessed" do
-      @board.rows.each { |row| row.set_guess([2, 2, 2, 2]) }
+      @board.rows.each { |row| row.set_code_peg_holes([2, 2, 2, 2]) }
       expect(@board.codemaker_victory?).to be_true
     end
 
@@ -72,8 +72,8 @@ describe Mastermind::Board do
     end
 
     it "returns false if the code has been guessed" do
-      @board.rows.each { |row| row.set_guess([2, 2, 2, 2]) }
-      @board.rows[9].set_guess([1, 1, 1, 1])
+      @board.rows.each { |row| row.set_code_peg_holes([2, 2, 2, 2]) }
+      @board.rows[9].set_code_peg_holes([1, 1, 1, 1])
       expect(@board.codemaker_victory?).to be_false
     end
   end

@@ -16,9 +16,9 @@ module Mastermind
       24.times { print "_" }
       puts
       @rows.each do |row|
-        print row.get_guess.map { |peg| peg.nil? ? "[ ]" : "[#{peg}]" }.join(" ")
+        print row.get_code_peg_holes.map { |peg| peg.nil? ? "[ ]" : "[#{peg}]" }.join(" ")
         print "  |  "
-        print row.get_clues.join
+        print row.get_key_peg_holes.join
         puts
       end
       puts
@@ -30,12 +30,12 @@ module Mastermind
     end
 
     def codebreaker_victory?
-      @rows.any? { |row| row.get_guess.eql? @code }
+      @rows.any? { |row| row.get_code_peg_holes.eql? @code }
     end
 
     def codemaker_victory?
       unguessed = Row.new
-      if @rows.any? { |row| row.get_guess.eql? unguessed.get_guess } || codebreaker_victory?
+      if @rows.any? { |row| row.get_code_peg_holes.eql? unguessed.get_code_peg_holes } || codebreaker_victory?
         false
       else
         true
