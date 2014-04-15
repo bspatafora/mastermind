@@ -1,39 +1,37 @@
 module Mastermind
   class Row
-    def initialize(peg_holes = 4, code_pegs = (1..6))
-      @peg_holes = peg_holes
-      @code_peg_holes = Array.new(peg_holes) { CodePegHole.new(code_pegs) }
-      @key_peg_holes = Array.new(peg_holes) { KeyPegHole.new }
+    attr_reader :code_peg_holes, :key_peg_holes
+
+    def initialize(options = {})
+      @code_pegs = options[:code_pegs] || (1..6)
+      @key_pegs = (1..2)
+      @row_size = options[:row_size] || 4
+      @code_peg_holes = Array.new(@row_size)
+      @key_peg_holes = Array.new(@row_size)
     end
 
     def set_code_peg_holes(pegs)
-      if pegs.size == @peg_holes
-        pegs.each_with_index { |peg, index| @code_peg_holes[index].set_peg(peg) }
-      else
-        raise ArgumentError, "Guess input must consist of #{@peg_holes} things."
-      end
+      pegs.each_with_index { |peg, index| @code_peg_holes[index] = peg }
     end
 
     def set_key_peg_holes(pegs)
-      if pegs.size <= @peg_holes
-        pegs.each_with_index { |peg, index| @key_peg_holes[index].set_peg(peg) }
+      if !too_many?(pegs) && !any_invalid?(pegs)
+        pegs.each_with_index { |peg, index| @key_peg_holes[index] = peg }
+      elsif !any_invalid?(pegs)
+        raise TooManyPegs, "Feedback must consist of #{@row_size} or fewer pegs."
       else
-        raise ArgumentError, "Clues input must consist of #{@peg_holes} or fewer things."
+        raise InvalidPegs, "Valid key pegs are in range #{@key_pegs}"
       end
-    end
-
-    def get_code_peg_holes
-      get_row_group(@code_peg_holes)
-    end
-
-    def get_key_peg_holes
-      get_row_group(@key_peg_holes)
     end
 
     private
 
-    def get_row_group(group)
-      group.map { |hole| hole.peg }
+    def too_many?(pegs)
+      pegs.size > @row_size
+    end
+
+    def any_invalid?(pegs)
+      return true unless pegs.all? { |peg| @key_pegs.include? peg }
     end
   end
 end

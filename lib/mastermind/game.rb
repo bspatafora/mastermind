@@ -19,7 +19,7 @@ module Mastermind
           puts "You win!"
           break
         end
-        row.set_key_peg_holes(@human.solicit_feedback)
+        @human.solicit_feedback(row)
       end
     end
   end

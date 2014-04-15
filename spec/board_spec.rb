@@ -1,23 +1,21 @@
 require 'spec_helper'
 
 describe Mastermind::Board do
-
   before { @board = Mastermind::Board.new }
 
-  it "is initialized with 10 rows by default" do
-    expect(@board.rows).to have(10).things
+  describe '#initialize' do
+    it "is initialized with 10 rows" do
+      expect(@board.rows).to have(10).things
+    end
   end
 
-  it "can be initialized with fewer rows" do
-    board = Mastermind::Board.new(1)
-    expect(board.rows).to have(1).things
-  end
-
-  it "can draw a representation of itself" do
-    @board.stub(:gets) { "1111" }
-    @board.solicit_code
-    # BETTER WAY TO TEST THIS?
-    expect(@board.draw).not_to raise_error
+  describe '#draw' do
+    it "can draw a representation of itself" do
+      @board.stub(:gets) { "1111" }
+      @board.solicit_code
+      # BETTER WAY TO TEST THIS?
+      expect(@board.draw).not_to raise_error
+    end
   end
 
   describe "#solicit_code" do
@@ -77,5 +75,4 @@ describe Mastermind::Board do
       expect(@board.codemaker_victory?).to be_false
     end
   end
-
 end

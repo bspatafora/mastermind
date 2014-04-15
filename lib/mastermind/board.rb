@@ -1,13 +1,12 @@
 module Mastermind
   class Board
-    attr_accessor :rows
-    attr_reader :code
+    attr_reader :rows, :code
 
-    def initialize(rows = 10, peg_holes = 4, code_pegs = (1..6))
-      @rows = Array.new(rows) { Row.new() }
-      @code = nil
-      @peg_holes = peg_holes
-      @code_pegs = code_pegs
+    def initialize
+      @board_size = 10
+      @row_size = 4
+      @code_pegs = (1..6)
+      @rows = Array.new(@board_size) { Row.new(row_size: @row_size, code_pegs: @code_pegs) }
     end
 
     def draw
@@ -16,26 +15,26 @@ module Mastermind
       24.times { print "_" }
       puts
       @rows.each do |row|
-        print row.get_code_peg_holes.map { |peg| peg.nil? ? "[ ]" : "[#{peg}]" }.join(" ")
+        print row.code_peg_holes.map { |peg| peg.nil? ? "[ ]" : "[#{peg}]" }.join(" ")
         print "  |  "
-        print row.get_key_peg_holes.join
+        print row.key_peg_holes.join
         puts
       end
       puts
     end
 
     def solicit_code
-      print "Pick a #{@peg_holes} digit code (a digit may be between #{@code_pegs.first} and #{@code_pegs.last}): "
+      print "Pick a #{@row_size} digit code (a digit may be between #{@code_pegs.first} and #{@code_pegs.last}): "
       set_code(gets.chomp)
     end
 
     def codebreaker_victory?
-      @rows.any? { |row| row.get_code_peg_holes.eql? @code }
+      @rows.any? { |row| row.code_peg_holes.eql? @code }
     end
 
     def codemaker_victory?
       unguessed = Row.new
-      if @rows.any? { |row| row.get_code_peg_holes.eql? unguessed.get_code_peg_holes } || codebreaker_victory?
+      if @rows.any? { |row| row.code_peg_holes.eql? unguessed.code_peg_holes } || codebreaker_victory?
         false
       else
         true
@@ -57,7 +56,7 @@ module Mastermind
     end
 
     def check_code(code)
-      valid_length = code.size == @peg_holes
+      valid_length = code.size == @row_size
       valid_digits = code.all? { |digit| @code_pegs.include? digit }
       if @code.nil? && valid_length && valid_digits
         return :valid
