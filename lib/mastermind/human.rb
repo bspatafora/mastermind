@@ -11,16 +11,10 @@ module Mastermind
       begin
         pegs = feedback.split('').map { |x| x.to_i }
         row.set_key_peg_holes(pegs)
-      rescue TooManyPegs => error
-        invalid_feedback(error, row)
-      rescue InvalidPegs => error
-        invalid_feedback(error, row)
+      rescue TooManyPegs, InvalidPegs => error
+        puts error.message
+        solicit_feedback(row)
       end
-    end
-
-    def invalid_feedback(error, row)
-      puts error.message
-      solicit_feedback(row)
     end
   end
 end

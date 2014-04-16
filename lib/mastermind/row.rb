@@ -31,7 +31,7 @@ module Mastermind
     end
 
     def any_invalid?(pegs)
-      return true unless pegs.all? { |peg| @key_pegs.include? peg }
+      !pegs.all? { |peg| @key_pegs.include? peg }
     end
   end
 end

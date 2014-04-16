@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Mastermind::Human do
-  describe "#solicit_clues" do
+  describe "#solicit_feedback" do
     before do
       @human = Mastermind::Human.new
       @row = Mastermind::Row.new
     end
 
-    it "returns a clue array if the user's input is valid" do
+    it "sets the passed row's key peg holes if the user's input is valid" do
       @human.stub(:gets) { "11" }
     end
 
