@@ -43,6 +43,10 @@ describe Mastermind::Computer do
     it "provides correct feedback in tricky instances" do
       expect(@computer.solicit_feedback([1, 1, 2, 2], [3, 3, 3, 1])).to eql([2])
     end
+
+    it "provides correct feedback in complex instances" do
+      expect(@computer.solicit_feedback([1, 1, 2, 2], [2, 1, 2, 4])).to eql([1, 1, 2])
+    end
   end
 
   it "correctly eliminates remaining possible codes that cannot be the actual code" do
@@ -50,12 +54,10 @@ describe Mastermind::Computer do
   end
 
   it "generates the right number of feedbacks given row size" do
-    expect(@computer.generate_all_feedbacks).to have(14).things
+    expect(@computer.generate_all_feedbacks).to have(15).things
   end
 
-  it "can determine the row of the last guess" do
-    @board.rows[0].set_code_peg_holes([1, 1, 2, 2])
-    @board.rows[1].set_code_peg_holes([3, 3, 3, 3])
-    expect(@computer.determine_row_of_last_guess(@board)).to eql([3, 3, 3, 3])
+  it "correctly scores guesses" do
+    expect(@computer.score_guess([3, 1, 2, 2])).to eql(1020)
   end
 end

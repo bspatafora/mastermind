@@ -19,15 +19,20 @@ module Mastermind
         @possible_codes = @possible_codes - to_eliminate
         scored_guesses = Hash.new
         @unguessed_codes.each do |guess|
-          scored_guesses.store(guess, score_guess(guess))
+          score = score_guess(guess)
+          scored_guesses.store(guess, score)
         end
         candidates = Array.new
         scored_guesses.each do |guess, score|
-          candidates.push(guess) if score == scored_guesses.values.max
+          if score == scored_guesses.values.max
+            candidates.push(guess)
+          end
         end
         candidates_in_possible_codes = Array.new
         candidates.each do |guess|
-          candidates_in_possible_codes.push(guess) if @possible_codes.include? guess
+          if @possible_codes.include? guess
+            candidates_in_possible_codes.push(guess)
+          end
         end
         if !candidates_in_possible_codes.empty?
           candidates_in_possible_codes.first
@@ -72,7 +77,7 @@ module Mastermind
       feedback.compact!
       feedback.sort!
       @possible_codes.each do |code|
-        if solicit_feedback(code, guess) != feedback
+        if !solicit_feedback(code, guess).eql? feedback
           to_eliminate.push(code)
         end
       end
@@ -85,21 +90,22 @@ module Mastermind
 
     def generate_all_feedbacks
       feedbacks = Array.new
+      # Add empty array to represent "pegless" feedback
+      feedbacks.push(Array.new)
       (1..@row_size).each do |length|
         [1, 2].repeated_combination(length).to_a.each { |feedback| feedbacks.push(feedback) }
       end
-      feedbacks
+      feedbacks.sort!
     end
 
     def determine_row_of_last_guess(board)
-      board.rows.each do |row|
+      board.rows.reverse_each do |row|
         if !row_empty?(row)
           @last_guess = row.code_peg_holes
           @last_guess_feedback = row.key_peg_holes
+          break
         end
       end
-      # TEMPORARY RETURN FOR TESTING
-      @last_guess
     end
 
     def row_empty?(row)
