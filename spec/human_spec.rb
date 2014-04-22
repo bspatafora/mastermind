@@ -21,7 +21,7 @@ describe Mastermind::Human do
 
     after do
       @human.solicit_feedback(@row)
-      expect(@row.key_peg_holes).to eql([1, 1, nil, nil])
+      expect(@row.key_peg_holes).to eql([1, 1])
     end
   end
 end

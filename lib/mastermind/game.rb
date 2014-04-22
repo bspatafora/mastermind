@@ -6,7 +6,6 @@ module Mastermind
       @human = Human.new
     end
 
-# CAN THIS BE TESTED?
     def play
       @board.solicit_code
       @board.rows.each do |row|

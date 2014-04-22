@@ -6,7 +6,7 @@ module Mastermind
       @board_size = 10
       @row_size = 4
       @code_pegs = (1..6)
-      @rows = Array.new(@board_size) { Row.new(row_size: @row_size, code_pegs: @code_pegs) }
+      @rows = Array.new(@board_size) { Row.new(size: @row_size, code_pegs: @code_pegs) }
     end
 
     def draw
@@ -23,48 +23,37 @@ module Mastermind
       puts
     end
 
-    def solicit_code
-      print "Pick a #{@row_size} digit code (a digit may be between #{@code_pegs.first} and #{@code_pegs.last}): "
-      set_code(gets.chomp)
-    end
-
     def codebreaker_victory?
       @rows.any? { |row| row.code_peg_holes.eql? @code }
     end
 
     def codemaker_victory?
-      unguessed = Row.new
-      if @rows.any? { |row| row.code_peg_holes.eql? unguessed.code_peg_holes } || codebreaker_victory?
-        false
-      else
-        true
-      end
+      !@rows.any? { |row| row.code_peg_holes.eql? Row.new.code_peg_holes } && !codebreaker_victory?
+    end
+
+    def solicit_code
+      print "Pick a #{@row_size}-digit code (a digit may be between #{@code_pegs.first} and #{@code_pegs.last}): "
+      set_code(gets.chomp)
     end
 
     private
 
     def set_code(input)
       code = input.split('').map { |x| x.to_i }
-      case check_code(code)
-      when :valid
+      if correct_length?(code) && all_valid?(code)
         @code = code
-      when :invalid
+      else
+        puts "Invalid code."
         solicit_code
-      when :preexisting_code
-        raise ArgumentError, "Code has already been set this game."
       end
     end
 
-    def check_code(code)
-      valid_length = code.size == @row_size
-      valid_digits = code.all? { |digit| @code_pegs.include? digit }
-      if @code.nil? && valid_length && valid_digits
-        return :valid
-      elsif @code.nil?
-        return :invalid
-      else
-        return :preexisting_code
-      end
+    def correct_length?(code)
+      code.size == @row_size
+    end
+
+    def all_valid?(code)
+      code.all? { |peg| @code_pegs.include? peg }
     end
   end
 end

@@ -13,7 +13,6 @@ describe Mastermind::Board do
     it "can draw a representation of itself" do
       @board.stub(:gets) { "1111" }
       @board.solicit_code
-      # BETTER WAY TO TEST THIS?
       expect(@board.draw).not_to raise_error
     end
   end
@@ -21,20 +20,15 @@ describe Mastermind::Board do
   describe "#solicit_code" do
     it "sets the code if it's valid" do
       @board.stub(:gets) { "1111" }
-      @board.solicit_code
-      expect(@board.code).to eql([1, 1, 1, 1])
     end
 
     it "doesn't set the code if it's invalid" do
       @board.stub(:gets).and_return("aaaa", "1111")
-      @board.solicit_code
-      expect(@board.code).to eql([1, 1, 1, 1])
     end
 
-    it "doesn't set the code if it's already set" do
-      @board.stub(:gets) { "1111" }
+    after do
       @board.solicit_code
-      expect { @board.solicit_code }.to raise_error(ArgumentError)
+      expect(@board.code).to eql([1, 1, 1, 1])
     end
   end
 
