@@ -5,32 +5,29 @@ module Mastermind
       @row_size = 4
       @code_pegs = (1..6)
       @possible_codes = generate_all_codes
-      @unguessed_codes = generate_all_codes
     end
 
     def solicit_guess
       if first_guess?
         [1, 1, 2, 2]
       else
-        update_code_lists
+        update_possible_codes
         scored_guesses = generate_scored_guesses
-        scored_guesses.each do |guess, score|
-          return guess if score == scored_guesses.values.max && @possible_codes.include?(guess)
-        end
         scored_guesses.each do |guess, score|
           return guess if score == scored_guesses.values.max
         end
       end
     end
 
-    def update_code_lists
-      @unguessed_codes.delete(retrieve_last_guess)
+    private
+
+    def update_possible_codes
       @possible_codes = @possible_codes - generate_codes_to_eliminate(retrieve_last_guess, retrieve_last_feedback)
     end
 
     def generate_scored_guesses
       scored_guesses = Hash.new
-      @unguessed_codes.each { |guess| scored_guesses.store(guess, score(guess)) }
+      @possible_codes.each { |guess| scored_guesses.store(guess, score(guess)) }
       scored_guesses
     end
 
