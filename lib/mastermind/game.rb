@@ -1,7 +1,7 @@
 module Mastermind
   class Game
-    def initialize
-      @board = Board.new
+    def initialize(board)
+      @board = board
       @computer = Computer.new(@board)
       @human = Human.new
     end
