@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Mastermind::Computer do
   before do
-    @computer = Mastermind::Computer.new
     @board = Mastermind::Board.new
+    @computer = Mastermind::Computer.new(@board)
   end
 
   it "responds to solicit_guess with a guess" do
-    expect(@computer.solicit_guess(@board)).to eql([1, 1, 2, 2])
+    expect(@computer.solicit_guess).to eql([1, 1, 2, 2])
   end
 
   it "generates the right number of codes given row size and possible code pegs" do
@@ -15,12 +15,12 @@ describe Mastermind::Computer do
   end
 
   it "knows when it hasn't yet made any guesses" do
-    expect(@computer.first_guess?(@board)).to be_true
+    expect(@computer.first_guess?).to be_true
   end
 
   it "knows when it has already made its first guess" do
     @board.rows.first.set_code_peg_holes([1, 1, 2, 2])
-    expect(@computer.first_guess?(@board)).to be_false
+    expect(@computer.first_guess?).to be_false
   end
 
   describe "#solicit_feedback" do
@@ -58,6 +58,6 @@ describe Mastermind::Computer do
   end
 
   it "correctly scores guesses" do
-    expect(@computer.score_guess([3, 1, 2, 2])).to eql(1020)
+    expect(@computer.score([3, 1, 2, 2])).to eql(1020)
   end
 end

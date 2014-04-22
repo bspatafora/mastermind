@@ -2,14 +2,14 @@ module Mastermind
   class Game
     def initialize
       @board = Board.new
-      @computer = Computer.new
+      @computer = Computer.new(@board)
       @human = Human.new
     end
 
     def play
       @board.solicit_code
       @board.rows.each do |row|
-        row.set_code_peg_holes(@computer.solicit_guess(@board))
+        row.set_code_peg_holes(@computer.solicit_guess)
         @board.draw
         if @board.codebreaker_victory?
           puts "Computer wins!"

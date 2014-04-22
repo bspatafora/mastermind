@@ -1,87 +1,81 @@
 module Mastermind
   class Computer
-    def initialize
+    def initialize(board)
+      @board = board
       @row_size = 4
       @code_pegs = (1..6)
-      @all_codes = generate_all_codes
       @possible_codes = generate_all_codes
       @unguessed_codes = generate_all_codes
-      @all_feedbacks = generate_all_feedbacks
     end
 
-    def solicit_guess(board)
-      if first_guess?(board)
+    def solicit_guess
+      if first_guess?
         [1, 1, 2, 2]
       else
-        determine_row_of_last_guess(board)
-        @unguessed_codes.delete(@last_guess)
-        to_eliminate = generate_codes_to_eliminate(@last_guess, @last_guess_feedback)
-        @possible_codes = @possible_codes - to_eliminate
-        scored_guesses = Hash.new
-        @unguessed_codes.each do |guess|
-          score = score_guess(guess)
-          scored_guesses.store(guess, score)
-        end
-        candidates = Array.new
+        update_code_lists
+        scored_guesses = generate_scored_guesses
         scored_guesses.each do |guess, score|
-          if score == scored_guesses.values.max
-            candidates.push(guess)
-          end
+          return guess if score == scored_guesses.values.max && @possible_codes.include?(guess)
         end
-        candidates_in_possible_codes = Array.new
-        candidates.each do |guess|
-          if @possible_codes.include? guess
-            candidates_in_possible_codes.push(guess)
-          end
-        end
-        if !candidates_in_possible_codes.empty?
-          candidates_in_possible_codes.first
-        else
-          candidates.first
+        scored_guesses.each do |guess, score|
+          return guess if score == scored_guesses.values.max
         end
       end
     end
 
-    def score_guess(guess)
-      possibility_eliminations = Array.new
-      @all_feedbacks.each do |feedback|
-        possibility_eliminations.push(generate_codes_to_eliminate(guess, feedback).count)
+    def update_code_lists
+      @unguessed_codes.delete(retrieve_last_guess)
+      @possible_codes = @possible_codes - generate_codes_to_eliminate(retrieve_last_guess, retrieve_last_feedback)
+    end
+
+    def generate_scored_guesses
+      scored_guesses = Hash.new
+      @unguessed_codes.each { |guess| scored_guesses.store(guess, score(guess)) }
+      scored_guesses
+    end
+
+    def score(guess)
+      eliminations_set = Array.new
+      generate_all_feedbacks.each do |feedback|
+        eliminations_set.push(generate_codes_to_eliminate(guess, feedback).count)
       end
-      possibility_eliminations.min
+      eliminations_set.min
+    end
+
+    def generate_codes_to_eliminate(guess, feedback)
+      to_eliminate = Array.new
+      feedback.sort!
+      @possible_codes.each { |code| to_eliminate.push(code) if !solicit_feedback(code, guess).eql? feedback }
+      to_eliminate
     end
 
     def solicit_feedback(guess, code)
-      feedback = Array.new
-      correct_position = Array.new 
-      correct_color = Array.new
-      guess.each_with_index { |peg, index| correct_position.push(1) if peg == code[index] }
+      correct_position_set = generate_correct_position_set(guess, code)
+      correct_color_set = generate_correct_color_set(guess, code)
+      correct_color_set.pop(correct_position_set.count)
+      correct_position_set + correct_color_set
+    end
+
+    def generate_correct_position_set(guess, code)
+      correct_position_set = Array.new
+      guess.each_with_index { |peg, index| correct_position_set.push(1) if peg == code[index] }
+      correct_position_set
+    end
+
+    def generate_correct_color_set(guess, code)
+      correct_color_set = Array.new
       @code_pegs.each do |peg|
         if code.include? peg
           instances_in_code = code.count(peg)
           instances_in_guess = guess.count(peg)
           while instances_in_code > 0 && instances_in_guess > 0
-            correct_color.push(2)
+            correct_color_set.push(2)
             instances_in_code -= 1
             instances_in_guess -= 1
           end
         end
       end
-      correct_color.pop(correct_position.count)
-      correct_position.each { |peg| feedback.push(peg) }
-      correct_color.each { |peg| feedback.push(peg) }
-      feedback
-    end
-
-    def generate_codes_to_eliminate(guess, feedback)
-      to_eliminate = Array.new
-      feedback.compact!
-      feedback.sort!
-      @possible_codes.each do |code|
-        if !solicit_feedback(code, guess).eql? feedback
-          to_eliminate.push(code)
-        end
-      end
-      to_eliminate
+      correct_color_set
     end
 
     def generate_all_codes
@@ -90,30 +84,32 @@ module Mastermind
 
     def generate_all_feedbacks
       feedbacks = Array.new
-      # Add empty array to represent "pegless" feedback
-      feedbacks.push(Array.new)
+      empty_feedback = []
+      feedbacks.push(empty_feedback)
       (1..@row_size).each do |length|
         [1, 2].repeated_combination(length).to_a.each { |feedback| feedbacks.push(feedback) }
       end
-      feedbacks.sort!
+      feedbacks
     end
 
-    def determine_row_of_last_guess(board)
-      board.rows.reverse_each do |row|
-        if !row_empty?(row)
-          @last_guess = row.code_peg_holes
-          @last_guess_feedback = row.key_peg_holes
-          break
-        end
-      end
+    def retrieve_last_guess
+      retrieve_last_row.code_peg_holes
+    end
+
+    def retrieve_last_feedback
+      retrieve_last_row.key_peg_holes
+    end
+
+    def retrieve_last_row
+      @board.rows.reverse_each { |row| return row if !row_empty? row }
+    end
+
+    def first_guess?
+      row_empty?(@board.rows.first)
     end
 
     def row_empty?(row)
       row.code_peg_holes.eql? Row.new.code_peg_holes
-    end
-
-    def first_guess?(board)
-      row_empty?(board.rows.first)
     end
   end
 end
