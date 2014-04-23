@@ -1,4 +1,7 @@
 module Mastermind
+  class InvalidCode < StandardError
+  end
+
   class TooManyPegs < StandardError
   end
 

@@ -1,24 +1,21 @@
 module Mastermind
   class Game
-    def initialize(board)
+    def initialize(interface, board)
       @board = board
+      @interface = interface
       @computer = Computer.new(@board)
-      @human = Human.new
     end
 
     def play
-      @board.solicit_code
+      @interface.solicit_code
       @board.rows.each do |row|
         row.set_code_peg_holes(@computer.solicit_guess)
-        @board.draw
-        if @board.codebreaker_victory?
-          puts "Computer wins!"
-          break
-        elsif @board.codemaker_victory?
-          puts "You win!"
+        @interface.draw_board
+        if @board.codebreaker_victory? || @board.codemaker_victory?
+          @interface.game_over
           break
         end
-        @human.solicit_feedback(row)
+        @interface.solicit_feedback(row)
       end
     end
   end

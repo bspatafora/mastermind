@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe Mastermind::Board do
-  before { @board = Mastermind::Board.new }
+  before do
+    @board = Mastermind::Board.new
+    @interface = Mastermind::CommandLineInterface.new(@board)
+  end
 
   describe '#initialize' do
     it "is initialized with 10 rows" do
@@ -9,33 +12,25 @@ describe Mastermind::Board do
     end
   end
 
-  describe '#draw' do
-    it "can draw a representation of itself" do
-      @board.stub(:gets) { "1111" }
-      @board.solicit_code
-      expect(@board.draw).not_to raise_error
-    end
-  end
-
-  describe "#solicit_code" do
+  describe "#set_code" do
     it "sets the code if it's valid" do
-      @board.stub(:gets) { "1111" }
+      @interface.stub(:gets) { "1111" }
     end
 
     it "doesn't set the code if it's invalid" do
-      @board.stub(:gets).and_return("aaaa", "1111")
+      @interface.stub(:gets).and_return("aaaa", "1111")
     end
 
     after do
-      @board.solicit_code
+      @interface.solicit_code
       expect(@board.code).to eql([1, 1, 1, 1])
     end
   end
 
   describe "#codebreaker_victory?" do
     before(:each) do
-      @board.stub(:gets) { "1111" }
-      @board.solicit_code
+      @interface.stub(:gets) { "1111" }
+      @interface.solicit_code
     end
 
     it "returns true when the code has been guessed" do
@@ -50,8 +45,8 @@ describe Mastermind::Board do
 
   describe "#codemaker_victory?" do
     before(:each) do
-      @board.stub(:gets) { "1111" }
-      @board.solicit_code
+      @interface.stub(:gets) { "1111" }
+      @interface.solicit_code
     end
 
     it "returns true when game is over and code hasn't been guessed" do
