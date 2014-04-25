@@ -9,6 +9,7 @@ module Mastermind
 
     def solicit_guess
       if first_guess?
+        # Most informative first guesses are of the pattern xxyy.
         [1, 1, 2, 2]
       else
         update_possible_codes
@@ -16,6 +17,8 @@ module Mastermind
         scored_guesses.each do |guess, score|
           return guess if score == scored_guesses.values.max
         end
+        # If scored_guesses is empty, the human has lied
+        ["L", "I", "A", "R"]
       end
     end
 

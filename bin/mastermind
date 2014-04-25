@@ -3,5 +3,7 @@
 require_relative '../lib/mastermind.rb'
 
 board = Mastermind::Board.new
-game = Mastermind::Game.new(Mastermind::CommandLineInterface.new(board), board)
+computer = Mastermind::Computer.new(board)
+interface = Mastermind::CommandLineInterface.new(board)
+game = Mastermind::Game.new(interface, board, computer)
 game.play
