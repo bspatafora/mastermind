@@ -1,5 +1,5 @@
 module Mastermind
-  class Game
+  class CommandLineRunner
     def initialize(interface, board, computer)
       @board = board
       @interface = interface

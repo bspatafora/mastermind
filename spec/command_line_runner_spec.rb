@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Mastermind::Game do
+describe Mastermind::CommandLineRunner do
   before do
     @board = Mastermind::Board.new
     @interface = Mastermind::CommandLineInterface.new(@board)
     @computer = Mastermind::Computer.new(@board)
-    @game = Mastermind::Game.new(@interface, @board, @computer)
+    @game = Mastermind::CommandLineRunner.new(@interface, @board, @computer)
   end
 
   describe '#play' do

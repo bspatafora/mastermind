@@ -5,5 +5,5 @@ require_relative '../lib/mastermind.rb'
 board = Mastermind::Board.new
 computer = Mastermind::Computer.new(board)
 interface = Mastermind::CommandLineInterface.new(board)
-game = Mastermind::Game.new(interface, board, computer)
-game.play
+runner = Mastermind::CommandLineRunner.new(interface, board, computer)
+runner.play
