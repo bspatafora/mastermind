@@ -1,12 +1,12 @@
 module Mastermind
   class Board
-    attr_reader :row_size, :code_pegs, :rows, :code
+    attr_reader :size, :row_size, :code_pegs, :rows, :code
 
     def initialize
-      @board_size = 10
+      @size = 10
       @row_size = 4
       @code_pegs = (1..6)
-      @rows = Array.new(@board_size) { Row.new(size: @row_size, code_pegs: @code_pegs) }
+      @rows = Array.new(@size) { Row.new(size: @row_size, code_pegs: @code_pegs) }
     end
 
     def codebreaker_victory?
