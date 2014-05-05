@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Mastermind::Board do
   before do
     @board = Mastermind::Board.new
-    @interface = Mastermind::CommandLineInterface.new(@board)
+    @board.set_code([1, 1, 1, 1])
   end
 
   describe '#initialize' do
@@ -14,25 +14,15 @@ describe Mastermind::Board do
 
   describe "#set_code" do
     it "sets the code if it's valid" do
-      @interface.stub(:gets) { "1111" }
+      expect(@board.code).to eql([1, 1, 1, 1])
     end
 
     it "doesn't set the code if it's invalid" do
-      @interface.stub(:gets).and_return("aaaa", "1111")
-    end
-
-    after do
-      @interface.solicit_code
-      expect(@board.code).to eql([1, 1, 1, 1])
+      expect{ @board.set_code([1, 1, 1]) }.to raise_error(Mastermind::InvalidCode)
     end
   end
 
   describe "#codebreaker_victory?" do
-    before(:each) do
-      @interface.stub(:gets) { "1111" }
-      @interface.solicit_code
-    end
-
     it "returns true when the code has been guessed" do
       @board.rows[0].set_code_peg_holes([1, 1, 1, 1])
       expect(@board.codebreaker_victory?).to be_true
@@ -44,11 +34,6 @@ describe Mastermind::Board do
   end
 
   describe "#codemaker_victory?" do
-    before(:each) do
-      @interface.stub(:gets) { "1111" }
-      @interface.solicit_code
-    end
-
     it "returns true when game is over and code hasn't been guessed" do
       @board.rows.each { |row| row.set_code_peg_holes([2, 2, 2, 2]) }
       expect(@board.codemaker_victory?).to be_true
