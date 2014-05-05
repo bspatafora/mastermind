@@ -12,7 +12,7 @@ module Mastermind
         row.set_code_peg_holes(@computer.solicit_guess)
         @interface.draw_board
         if game_over?
-          @interface.say_game_over
+          @interface.say_game_over(determine_winner)
           break
         end
         @interface.solicit_feedback(row)
@@ -23,6 +23,14 @@ module Mastermind
 
     def game_over?
       @board.codebreaker_victory? || @board.codemaker_victory?
+    end
+
+    def determine_winner
+      if @board.codebreaker_victory?
+        "Computer"
+      else
+        "Human"
+      end
     end
   end
 end

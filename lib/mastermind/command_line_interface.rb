@@ -4,12 +4,8 @@ module Mastermind
       @board = board
     end
 
-    def say_game_over
-      if @board.codebreaker_victory?
-        print stringify_computer_victory_message
-      else
-        print stringify_human_victory_message
-      end
+    def say_game_over(winner)
+      puts stringify_game_over(winner)
     end
 
     def solicit_code
@@ -22,6 +18,11 @@ module Mastermind
       end
     end
 
+    def send_code(input)
+      code = input.split('').map { |digit| digit.to_i }
+      @board.set_code(code)
+    end
+
     def solicit_feedback(row)
       begin
         print stringify_solicit_feedback_message
@@ -30,6 +31,11 @@ module Mastermind
         print stringify_error_message
         solicit_feedback(row)
       end
+    end
+
+    def send_feedback(input, row)
+      feedback = input.split('').map { |digit| digit.to_i }
+      row.set_key_peg_holes(feedback)
     end
 
     def draw_board
@@ -47,14 +53,8 @@ eos
 
     private
 
-    def send_code(input)
-      code = input.split('').map { |digit| digit.to_i }
-      @board.set_code(code)
-    end
-
-    def send_feedback(input, row)
-      feedback = input.split('').map { |digit| digit.to_i }
-      row.set_key_peg_holes(feedback)
+    def stringify_game_over(winner)
+      "#{winner} wins!"
     end
 
     def stringify_rows
