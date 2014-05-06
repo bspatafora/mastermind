@@ -4,7 +4,7 @@ module Mastermind
       @board = board
       @row_size = 4
       @code_pegs = (1..6)
-      @possible_codes = generate_all_codes
+      @all_codes = generate_all_codes
     end
 
     def solicit_guess
@@ -12,40 +12,27 @@ module Mastermind
         # Most informative first guesses are of the pattern xxyy.
         [1, 1, 2, 2]
       else
-        update_possible_codes
-        scored_guesses = generate_scored_guesses
-        scored_guesses.each do |guess, score|
-          return guess if score == scored_guesses.values.max
-        end
-        # If scored_guesses is empty, the human has lied
-        ["L", "I", "A", "R"]
+        get_possible_codes.first || ["L", "I", "A", "R"] # If scored_guesses is empty, the human has lied
       end
     end
 
     private
 
-    def update_possible_codes
-      @possible_codes = @possible_codes - generate_codes_to_eliminate(retrieve_last_guess, retrieve_last_feedback)
-    end
-
-    def generate_scored_guesses
-      scored_guesses = Hash.new
-      @possible_codes.each { |guess| scored_guesses.store(guess, score(guess)) }
-      scored_guesses
-    end
-
-    def score(guess)
-      eliminations_set = Array.new
-      generate_all_feedbacks.each do |feedback|
-        eliminations_set.push(generate_codes_to_eliminate(guess, feedback).count)
+    def get_possible_codes
+      possible_codes = generate_all_codes
+      @board.rows.each do |row|
+        unless row_empty?(row)
+          codes_to_eliminate = generate_codes_to_eliminate(row.code_peg_holes, row.key_peg_holes) 
+          possible_codes = possible_codes - codes_to_eliminate
+        end
       end
-      eliminations_set.min
+      possible_codes
     end
 
     def generate_codes_to_eliminate(guess, feedback)
       to_eliminate = Array.new
       feedback.sort!
-      @possible_codes.each { |code| to_eliminate.push(code) if !solicit_feedback(code, guess).eql? feedback }
+      @all_codes.each { |code| to_eliminate.push(code) if !solicit_feedback(code, guess).eql? feedback }
       to_eliminate
     end
 
@@ -90,18 +77,6 @@ module Mastermind
         [1, 2].repeated_combination(length).to_a.each { |feedback| feedbacks.push(feedback) }
       end
       feedbacks
-    end
-
-    def retrieve_last_guess
-      retrieve_last_row.code_peg_holes
-    end
-
-    def retrieve_last_feedback
-      retrieve_last_row.key_peg_holes
-    end
-
-    def retrieve_last_row
-      @board.rows.reverse_each { |row| return row if !row_empty? row }
     end
 
     def first_guess?
