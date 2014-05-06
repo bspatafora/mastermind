@@ -9,6 +9,18 @@ module Mastermind
       @rows = Array.new(@size) { Row.new(size: @row_size, code_pegs: @code_pegs) }
     end
 
+    def game_over?
+      codebreaker_victory? || codemaker_victory?
+    end
+
+    def determine_winner
+      if codebreaker_victory?
+        "Codebreaker"
+      elsif codemaker_victory?
+        "Codemaker"
+      end
+    end
+
     def codebreaker_victory?
       @rows.any? { |row| row.code_peg_holes.eql? @code }
     end

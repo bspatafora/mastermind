@@ -2,9 +2,9 @@ module Mastermind
   module JSONInterface
     def self.generate_structure_from(board)
       board_structure = Hash.new
-      board_structure.store(:code, board.code)
+      board_structure[:code] = board.code
       rows_structure = generate_rows_structure_from(board)
-      board_structure.store(:rows, rows_structure)
+      board_structure[:rows] = rows_structure
       board_structure
     end
 
@@ -23,10 +23,10 @@ module Mastermind
     def self.generate_rows_structure_from(board)
       rows_structure = Array.new
       board.rows.each do |row|
-        row_structure = Hash.new
-        row_structure.store(:code_peg_holes, row.code_peg_holes)
-        row_structure.store(:key_peg_holes, row.key_peg_holes)
-        rows_structure.push(row_structure)
+        row_struct = Hash.new
+        row_struct[:code_peg_holes] = row.code_peg_holes
+        row_struct[:key_peg_holes] = row.key_peg_holes
+        rows_structure << row_struct
       end
       rows_structure
     end

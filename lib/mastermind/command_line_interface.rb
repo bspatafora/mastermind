@@ -5,7 +5,7 @@ module Mastermind
     end
 
     def say_game_over(winner)
-      puts stringify_game_over(winner)
+      puts "#{winner} wins!"
     end
 
     def solicit_code
@@ -53,10 +53,6 @@ eos
 
     private
 
-    def stringify_game_over(winner)
-      "#{winner} wins!"
-    end
-
     def stringify_rows
       rows = String.new
       @board.rows.each do |row|
@@ -82,18 +78,6 @@ eos
 
     def stringify_vertical_divider
       " | "
-    end
-
-    def stringify_computer_victory_message
-      <<eos
-Computer wins!
-eos
-    end
-
-    def stringify_human_victory_message
-      <<eos
-You win!
-eos
     end
 
     def stringify_solicit_code_message

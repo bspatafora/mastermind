@@ -32,7 +32,7 @@ module Mastermind
     def generate_codes_to_eliminate(guess, feedback)
       to_eliminate = Array.new
       feedback.sort!
-      @all_codes.each { |code| to_eliminate.push(code) if !solicit_feedback(code, guess).eql? feedback }
+      @all_codes.each { |code| to_eliminate << code if !solicit_feedback(code, guess).eql? feedback }
       to_eliminate
     end
 
@@ -45,7 +45,7 @@ module Mastermind
 
     def generate_correct_position_set(guess, code)
       correct_position_set = Array.new
-      guess.each_with_index { |peg, index| correct_position_set.push(1) if peg == code[index] }
+      guess.each_with_index { |peg, index| correct_position_set << 1 if peg == code[index] }
       correct_position_set
     end
 
@@ -56,7 +56,7 @@ module Mastermind
           instances_in_code = code.count(peg)
           instances_in_guess = guess.count(peg)
           while instances_in_code > 0 && instances_in_guess > 0
-            correct_color_set.push(2)
+            correct_color_set << 2
             instances_in_code -= 1
             instances_in_guess -= 1
           end
@@ -72,9 +72,9 @@ module Mastermind
     def generate_all_feedbacks
       feedbacks = Array.new
       empty_feedback = []
-      feedbacks.push(empty_feedback)
+      feedbacks << empty_feedback
       (1..@row_size).each do |length|
-        [1, 2].repeated_combination(length).to_a.each { |feedback| feedbacks.push(feedback) }
+        [1, 2].repeated_combination(length).to_a.each { |feedback| feedbacks << feedback }
       end
       feedbacks
     end
